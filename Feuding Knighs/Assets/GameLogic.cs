@@ -6,9 +6,9 @@ public class GameLogic : MonoBehaviour
 	static protected GameMap m_GameMap;
 	static protected Player[] m_players;
 	static protected GameObject m_Characters;
-	static protected Player currPlayer;
+	static protected int currPlayer;
 	static protected Mode[] m_modes;
-	static protected Mode currMode;
+	static protected int currMode;
 	static protected GameObject m_interface;
 	static protected CharacterController m_characterController;
 	
@@ -18,13 +18,15 @@ public class GameLogic : MonoBehaviour
 
 		m_GameMap = gameObject.AddComponent<GameMap>();
 		m_GameMap.Initialise();
-	//	m_characterController = gameObject.AddComponent<CharacterController>();
 		m_players = new Player[2];
-		m_players[0] = gameObject.AddComponent<Player> ();
-		Tile[] temp = { m_GameMap.GetTile (5, 6), m_GameMap.GetTile (5, 7),	m_GameMap.GetTile (5, 8),
+		m_players[0] = gameObject.AddComponent<Player>();
+		m_players[1] = gameObject.AddComponent<Player>();
+		Tile[] tempPlayer1 = { m_GameMap.GetTile (5, 6), m_GameMap.GetTile (5, 7),	m_GameMap.GetTile (5, 8),
 			m_GameMap.GetTile (6, 7), m_GameMap.GetTile (6, 8)};
-		m_players[0].Initialise(temp, "Zhiyao");
-		currPlayer = m_players[0];
+		Tile[] tempPlayer2 = {m_GameMap.GetTile (7, 7), m_GameMap.GetTile(8,7), m_GameMap.GetTile (8, 8)};
+		m_players[0].Initialise(tempPlayer1, "Zhiyao");
+		m_players [1].Initialise (tempPlayer2, "Oscar");
+		currPlayer = 0;
 		m_modes = new Mode[3];
 		m_modes [0] = gameObject.AddComponent<PlayerMode>() as Mode;
 		m_modes [0].Initialise ();
@@ -32,8 +34,8 @@ public class GameLogic : MonoBehaviour
 		m_modes [1].Initialise ();
 		m_modes [2] = gameObject.AddComponent<ArmyMode> () as Mode;
 		m_modes [2].Initialise ();
-		currMode = m_modes[1];
-		currMode.OnModeEnter();
+		currMode = 1;
+		m_modes[currMode].OnModeEnter();
 		//Debug.Log("Castle "+(int)Structure.Castle +", Barracks " +(int)Structure.Barracks+", walls "+(int)Structure.Wall);
 	}
 
@@ -44,11 +46,11 @@ public class GameLogic : MonoBehaviour
 	{
 		if(Input.GetKeyDown(KeyCode.Mouse0)) 
 		{
-			currMode.OnClick ();
+			m_modes[currMode].OnClick ();
 		} 
 		else
 		{
-			currMode.OnHover();
+			m_modes[currMode].OnHover();
 		}
 	}
 
@@ -57,10 +59,11 @@ public class GameLogic : MonoBehaviour
 	{
 		Ray mousePoint = Camera.main.ScreenPointToRay(Input.mousePosition);
 		RaycastHit hit;
-		if (Physics.Raycast (mousePoint, out hit, 1000000, currMode.GetLayerMask()))
+		if (Physics.Raycast(mousePoint, out hit, 1000000, m_modes[currMode].GetLayerMask()))
 		{
 			return hit.transform.gameObject;
-		} else 
+		} 
+		else 
 		{
 			return null;
 		}
@@ -68,27 +71,46 @@ public class GameLogic : MonoBehaviour
 
 	public void ChangeMode(int nextMode)
 	{
-		currMode.OnModeExit();
-		currMode = m_modes[nextMode];
-		currMode.OnModeEnter();
+		m_modes[currMode].OnModeExit();
+		currMode = nextMode;
+		m_modes[currMode].OnModeEnter();
 	}
 
 	public void OnGUI()
 	{
-	
-		if(GUI.Button(new Rect(10, 10, 150, 100),"Army"))
+		if (currMode != 1) 
 		{
-			if(currMode == m_modes[2])
+			if (GUI.Button (new Rect (10, 100, 150, 100), "Army")) 
 			{
-				ChangeMode(1);
+				ChangeMode (1);
 			}
-			else
+		}
+		if (currMode != 2) 
+		{
+			if (GUI.Button (new Rect (10, 10, 150, 110), "Build")) 
 			{
-				ChangeMode(2);
+					ChangeMode (2);
 			}
+		}
+		if (GUI.Button (new Rect (Screen.width-200, Screen.height-100, 150, 100), "End Turn, "+currPlayer+"'s turn"))
+		{
+			EndTurn();
 		}
 	}
 
+	public void EndTurn()
+	{
+		m_modes[currMode].OnModeExit ();
+		if((currPlayer+1) >= m_players.Length)
+		{
+			currPlayer = 0;
+		}
+		else
+		{
+			currPlayer ++;
+		}
+		m_modes[currMode].OnModeExit();
+	}
 }
 
 

@@ -59,7 +59,6 @@ public class Tile : MonoBehaviour
 			default : break;
 		}
 		gameObject.GetComponent<Renderer>().material = Resources.Load(m_building.ToString()) as Material;
-		gameObject.layer = LayerMask.NameToLayer("Can't Build");
 	}
 
 	//public string GetPlayerName(){return m_ownerName;}

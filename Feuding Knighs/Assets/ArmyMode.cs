@@ -27,7 +27,7 @@ public class ArmyMode : Mode
 			if(cursorObj.layer == LayerMask.NameToLayer("Army")) 
 			{
 				Debug.Log("Found Unit");
-				if(currPlayer.GetCharacter().OwnsArmy(cursorObj.GetComponent<Army>()))
+				if(m_players[currPlayer].GetCharacter().OwnsArmy(cursorObj.GetComponent<Army>()))
 				{
 					selectedArmy = cursorObj.GetComponent<Army>();
 					selectedArmy.gameObject.GetComponent<Renderer>().material = Resources.Load("ArmySelected") as Material;
@@ -56,9 +56,9 @@ public class ArmyMode : Mode
 						{
 							if(cursorObj.GetComponent<Tile>().GetOwner()!= null)
 							{
-							if(currPlayer.GetCharacter().OwnsTile( cursorObj.GetComponent<Tile>()))
+								if(m_players[currPlayer].GetCharacter().OwnsTile( cursorObj.GetComponent<Tile>()))
 							{
-									if(currPlayer.GetCharacter().SpendCash(cursorObj.GetComponent<Castle>().BuyArmy()))
+									if(m_players[currPlayer].GetCharacter().SpendCash(cursorObj.GetComponent<Castle>().BuyArmy()))
 									{
 										cursorObj.GetComponent<Tile>().GetOwner().RaiseArmy(cursorObj.GetComponent<Tile>().GetPopulation(), cursorObj.transform.position);
 									}
@@ -87,7 +87,13 @@ public class ArmyMode : Mode
 		
 	public override void OnModeExit()
 	{
-
+		if (selectedArmy != null) 
+		{
+			selectedArmy.gameObject.GetComponent<Renderer> ().material = Resources.Load ("ArmyMoved") as Material;
+			selectedArmy = null;
+			m_layerMask = 1 << 2;
+			m_layerMask = ~m_layerMask;
+		}
 	}
 		
 		

@@ -25,9 +25,9 @@ public class BuildMode : Mode
 		{
 			if(cursorObj.layer == LayerMask.NameToLayer("Tile")) 
 			{
-				if(currPlayer.GetCharacter().OwnsTile( cursorObj.GetComponent<Tile>()))
+				if(m_players[currPlayer].GetCharacter().OwnsTile( cursorObj.GetComponent<Tile>()))
 				{
-					if(currPlayer.GetCharacter().SpendCash(Building.GetCost(Structure.Castle, cursorObj)))
+					if(m_players[currPlayer].GetCharacter().SpendCash(Building.GetCost(Structure.Castle, cursorObj)))
 					{
 						Build(cursorObj, Structure.Castle);
 					}
@@ -47,26 +47,26 @@ public class BuildMode : Mode
 
 	public override void OnModeEnter()
 	{
-		for(int i = 0; i < currPlayer.GetCharacter().TilesOwned(); i++) 
+		for(int i = 0; i < m_players[currPlayer].GetCharacter().TilesOwned(); i++) 
 		{
-			if(currPlayer.GetCharacter().GetTile(i).CanBuild(Structure.Castle))
+			if(m_players[currPlayer].GetCharacter().GetTile(i).CanBuild(Structure.Castle))
 			{
-				Debug.Log(currPlayer.GetCharacter().GetTile(i).gameObject.ToString());
+				Debug.Log(m_players[currPlayer].GetCharacter().GetTile(i).gameObject.ToString());
 			}
 			else
 			{
-				currPlayer.GetCharacter().GetTile(i).gameObject.layer = LayerMask.NameToLayer("Can't Build");
+				m_players[currPlayer].GetCharacter().GetTile(i).gameObject.layer = LayerMask.NameToLayer("Can't Build");
 			}
 		}
 	}
 
 	public override void OnModeExit()
 	{
-		for(int i = 0; i < currPlayer.GetCharacter().TilesOwned(); i++) 
+		for(int i = 0; i < m_players[currPlayer].GetCharacter().TilesOwned(); i++) 
 		{
-			if(currPlayer.GetCharacter().GetTile(i).gameObject.layer == LayerMask.NameToLayer("Can't Build"))
+			if(m_players[currPlayer].GetCharacter().GetTile(i).gameObject.layer == LayerMask.NameToLayer("Can't Build"))
 			{
-				currPlayer.GetCharacter().GetTile(i).gameObject.layer = LayerMask.NameToLayer("Tile");
+				m_players[currPlayer].GetCharacter().GetTile(i).gameObject.layer = LayerMask.NameToLayer("Tile");
 			}
 			else
 			{
@@ -84,7 +84,6 @@ public class BuildMode : Mode
 		private void Build(GameObject givenTile, Structure  givenStructure)
 		{
 			givenTile.GetComponent<Tile>().Build(givenStructure);
-			//givenTile.GetComponent<Renderer>().material = Resources.Load ("Castle") as Material;
-			//m_building = gameObject.AddComponent<m_Building[0]> ();
+			givenTile.gameObject.layer = LayerMask.NameToLayer("Can't Build");
 		}
 }
