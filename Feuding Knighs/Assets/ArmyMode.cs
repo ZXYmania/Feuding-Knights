@@ -39,12 +39,14 @@ public class ArmyMode : Mode
 			{
 				if(selectedArmy != null)
 				{
-					selectedArmy.Move(cursorObj.transform.position);
-					selectedArmy.gameObject.GetComponent<Renderer>().material = Resources.Load("ArmyMoved") as Material;
-					Debug.Log("Moved");
-					selectedArmy = null;
-					m_layerMask = 1 << 2;
-					m_layerMask = ~m_layerMask;
+					if(selectedArmy.Move(cursorObj.transform.position))
+					{
+						selectedArmy.gameObject.GetComponent<Renderer>().material = Resources.Load("ArmyMoved") as Material;
+						Debug.Log("Moved");
+						selectedArmy = null;
+						m_layerMask = 1 << 2;
+						m_layerMask = ~m_layerMask;
+					}
 				}
 				else
 				{

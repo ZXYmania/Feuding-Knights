@@ -9,6 +9,7 @@ public class Army : MonoBehaviour
 	{
 		m_destination = transform.position;
 		gameObject.layer = LayerMask.NameToLayer("Army");
+		m_movementRate = 2;
 	}
 	
 	// Update is called once per frame
@@ -30,16 +31,18 @@ public class Army : MonoBehaviour
 	int efficiency;
 	float m_speed = 1;
 	Character m_owner;
-	int movementRate;
+	int m_movementRate;
 	bool moved;
 	public Vector3 m_destination;
 
-	public void Move(Vector3 givenDestination)
+	public bool Move(Vector3 givenDestination)
 	{
-		if (!moved)
+		givenDestination = new Vector3(givenDestination.x, transform.position.y,givenDestination.z);
+		if (!moved && Vector3.Magnitude(givenDestination-transform.position)<= m_movementRate)
 		{
 			m_destination = new Vector3( givenDestination.x, gameObject.transform.position.y, givenDestination.z);
 			moved = true;
 		}
+		return moved;
 	}
 }
