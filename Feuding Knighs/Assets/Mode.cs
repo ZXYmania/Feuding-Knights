@@ -14,6 +14,11 @@ public abstract class Mode : GameLogic
 	public abstract void OnHover();
 	public abstract void OnModeEnter();
 	public abstract void OnModeExit();
+	public abstract void UI();
 	public int GetLayerMask(){return m_layerMask;}
+	void Update()
+	{
+		
+	}
 
 }

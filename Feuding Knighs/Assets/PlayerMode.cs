@@ -49,16 +49,10 @@ public class PlayerMode : Mode
 	}
 	
 	
-	public void UI()
+	public override void UI()
 	{
 		
 	}
-	
-	private void Build(GameObject givenTile, Structure  givenStructure)
-	{
-		givenTile.GetComponent<Tile>().Build(givenStructure);
-		//givenTile.GetComponent<Renderer>().material = Resources.Load ("Castle") as Material;
-		//m_building = gameObject.AddComponent<m_Building[0]> ();
-	}
+
 
 }

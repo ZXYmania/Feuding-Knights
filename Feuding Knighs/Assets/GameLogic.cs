@@ -11,6 +11,8 @@ public class GameLogic : MonoBehaviour
 	static protected int currMode;
 	static protected GameObject m_interface;
 	static protected CharacterController m_characterController;
+	static float cameraSpeed;
+	public GameObject mainlight;
 	
 
 	void Start ()
@@ -28,14 +30,15 @@ public class GameLogic : MonoBehaviour
 		m_players [1].Initialise (tempPlayer2, "Oscar");
 		currPlayer = 0;
 		m_modes = new Mode[3];
-		m_modes [0] = gameObject.AddComponent<PlayerMode>() as Mode;
-		m_modes [0].Initialise ();
+		m_modes[0] = gameObject.AddComponent<PlayerMode>() as Mode;
+		m_modes[0].Initialise ();
 		m_modes[1] = gameObject.AddComponent<BuildMode>() as Mode;
-		m_modes [1].Initialise ();
-		m_modes [2] = gameObject.AddComponent<ArmyMode> () as Mode;
-		m_modes [2].Initialise ();
-		currMode = 1;
+		m_modes[1].Initialise ();
+		m_modes[2] = gameObject.AddComponent<ArmyMode> () as Mode;
+		m_modes[2].Initialise ();
+		currMode = 0;
 		m_modes[currMode].OnModeEnter();
+		cameraSpeed = 5;
 		//Debug.Log("Castle "+(int)Structure.Castle +", Barracks " +(int)Structure.Barracks+", walls "+(int)Structure.Wall);
 	}
 
@@ -52,6 +55,7 @@ public class GameLogic : MonoBehaviour
 		{
 			m_modes[currMode].OnHover();
 		}
+		MoveCamera ();
 	}
 
 
@@ -80,14 +84,14 @@ public class GameLogic : MonoBehaviour
 	{
 		if (currMode != 1) 
 		{
-			if (GUI.Button (new Rect (10, 100, 150, 100), "Army")) 
+			if (GUI.Button (new Rect (10, 120, 150, 100), "Build")) 
 			{
 				ChangeMode (1);
 			}
 		}
 		if (currMode != 2) 
 		{
-			if (GUI.Button (new Rect (10, 10, 150, 110), "Build")) 
+			if (GUI.Button (new Rect (10, 10, 150, 110), "Army")) 
 			{
 					ChangeMode (2);
 			}
@@ -96,6 +100,7 @@ public class GameLogic : MonoBehaviour
 		{
 			EndTurn();
 		}
+		m_modes[currMode].UI();
 	}
 
 	public void EndTurn()
@@ -109,7 +114,45 @@ public class GameLogic : MonoBehaviour
 		{
 			currPlayer ++;
 		}
-		m_modes[currMode].OnModeExit();
+		currMode = 0;
+		m_modes [currMode].OnModeEnter();
+	}
+
+	public void MoveCamera()
+	{
+		Vector3 movevector = Vector3.zero;
+		if (Input.GetKey (KeyCode.W)) 
+		{
+			movevector.z +=1;
+		}
+		if (Input.GetKey (KeyCode.S)) 
+		{
+			movevector.z -=1;
+		}
+		if (Input.GetKey (KeyCode.A))
+		{
+			movevector.x -=1;
+		}
+		if (Input.GetKey (KeyCode.D)) 
+		{
+			movevector.x +=1;
+		}
+		if (Input.GetKey (KeyCode.Q)) 
+		{
+
+			if((cameraSpeed-1 * Time.deltaTime) > 5)
+			{
+				gameObject.GetComponent<Camera>().orthographicSize -= 1 * Time.deltaTime;
+				cameraSpeed -= 1 * Time.deltaTime;
+			}
+		}
+		if (Input.GetKey (KeyCode.E)) 
+		{
+			gameObject.GetComponent<Camera>().orthographicSize+= 1 * Time.deltaTime;
+			cameraSpeed += 1 * Time.deltaTime;;
+		}
+		transform.position += Vector3.Normalize (movevector) * cameraSpeed * Time.deltaTime;
+		mainlight.transform.position = transform.position;
 	}
 }
 

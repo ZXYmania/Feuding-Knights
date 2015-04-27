@@ -9,10 +9,7 @@ public class ArmyMode : Mode
 		m_layerMask = 1 << 2 ;
 		m_layerMask = ~m_layerMask;
 	}
-	void Update()
-	{
 
-	}
 
 	void Start()
 	{
@@ -26,12 +23,12 @@ public class ArmyMode : Mode
 		{
 			if(cursorObj.layer == LayerMask.NameToLayer("Army")) 
 			{
-				Debug.Log("Found Unit");
+				Debug.Log("Found Army");
 				if(m_players[currPlayer].GetCharacter().OwnsArmy(cursorObj.GetComponent<Army>()))
 				{
 					selectedArmy = cursorObj.GetComponent<Army>();
 					selectedArmy.gameObject.GetComponent<Renderer>().material = Resources.Load("ArmySelected") as Material;
-					m_layerMask = (1 << 2)|(1 << 13);
+					m_layerMask = (1 << 2)|(1 << 14);
 					m_layerMask = ~m_layerMask;
 				}
 			}
@@ -50,22 +47,7 @@ public class ArmyMode : Mode
 				}
 				else
 				{
-					if(cursorObj.GetComponent<Tile>().GetBuilding() != null)
-					{
-						if(cursorObj.GetComponent<Tile>().GetBuilding().ToString() == "Castle")
-						{
-							if(cursorObj.GetComponent<Tile>().GetOwner()!= null)
-							{
-								if(m_players[currPlayer].GetCharacter().OwnsTile( cursorObj.GetComponent<Tile>()))
-							{
-									if(m_players[currPlayer].GetCharacter().SpendCash(cursorObj.GetComponent<Castle>().BuyArmy()))
-									{
-										cursorObj.GetComponent<Tile>().GetOwner().RaiseArmy(cursorObj.GetComponent<Tile>().GetPopulation(), cursorObj.transform.position);
-									}
-								}
-							}
-						}
-					}
+
 				}
 			}
 		}
@@ -97,7 +79,7 @@ public class ArmyMode : Mode
 	}
 		
 		
-	public void UI()
+	public override void UI()
 	{
 
 	}

@@ -3,12 +3,15 @@ using System.Collections;
 
 public class Castle : Building 
 {
-	public override string ToString ()
+	public int garrison;
+
+	public override Structure GetBuildingType()
 	{
-		return "Castle";
+		return Structure.Castle;
 	}
-	public int BuyArmy()
+
+	public int BuyArmy(int givenPopulation)
 	{
-		return 20;
+		return givenPopulation - garrison * cost;
 	}
 }

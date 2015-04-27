@@ -17,11 +17,11 @@ public class GameMap : MonoBehaviour
 
 	public void Initialise()
 	{
-		m_Map = new GameObject[10,10];
+		m_Map = new GameObject[100,100];
 		//m_Map = new GameObject[10][10];
-		for(int i = 0; i < 10; i++)
+		for(int i = 0; i < 100; i++)
 		{
-			for(int j = 0; j < 10; j++)
+			for(int j = 0; j < 100; j++)
 			{
 				m_Map[i,j] = Instantiate( Resources.Load("Tile"), new Vector3(i, 0, j), Quaternion.identity) as GameObject;
 				m_Map[i,j].GetComponent<Tile>().Initialise();

@@ -11,7 +11,11 @@ public class Army : MonoBehaviour
 		gameObject.layer = LayerMask.NameToLayer("Army");
 		m_movementRate = 2;
 	}
-	
+
+	public void Initialise(int givenSize)
+	{
+		m_size = givenSize;
+	}
 	// Update is called once per frame
 	void Update () 
 	{
@@ -19,16 +23,18 @@ public class Army : MonoBehaviour
 		{
 			
 			//transform.position = Vector3.Lerp(transform.position, transform.position + Vector3.Normalize(moveTo - transform.position), speed*Time.deltaTime);
-			if (Vector3.Magnitude (m_destination - transform.position) < m_speed * Time.deltaTime) {
+			if (Vector3.Magnitude (m_destination - transform.position) < m_speed * Time.deltaTime) 
+			{
 				transform.position = m_destination;
-			} else {
+			} 
+			else
+			{
 				transform.position += Vector3.Normalize (m_destination - transform.position) * m_speed * Time.deltaTime;
 			}
 		}
 	}
 
-	int size;
-	int efficiency;
+	int m_size;
 	float m_speed = 1;
 	Character m_owner;
 	int m_movementRate;

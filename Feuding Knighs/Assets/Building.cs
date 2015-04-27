@@ -5,10 +5,11 @@ public enum Structure
 {
 	Castle,
 	Barracks,
+	City,
 	Wall,
 	Armoury,
 	Mine,
-	
+	None
 }
 
 public abstract class Building : MonoBehaviour 
@@ -17,7 +18,6 @@ public abstract class Building : MonoBehaviour
 	protected static int[] m_cost = {150, 10}; //Castle, Barracks
 	public static int GetCost(Structure givenStructure)
 	{
-
 		return m_cost[(int)givenStructure];
 	}
 	public static int GetCost(Structure givenStructure, GameObject givenTile)
@@ -32,6 +32,7 @@ public abstract class Building : MonoBehaviour
 		}
 	}
 
+
 	// Use this for initialization
 	
 	// Update is called once per frame
@@ -44,6 +45,6 @@ public abstract class Building : MonoBehaviour
 	{
 	//	int[] m_cost  
 	}
-
-	public override abstract string ToString();
+	
+	public abstract Structure GetBuildingType();
 }
