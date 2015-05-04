@@ -21,7 +21,7 @@ public class Character : MonoBehaviour
 			characterList[0] = givenCharacter;
 		}
 	}
-
+	
 	public static Character GetCharacter(Tile givenCapitalTile)
 	{
 		for (int i = 0; i < characterList.Length; i++) 
@@ -33,36 +33,36 @@ public class Character : MonoBehaviour
 		}
 		return null;
 	}
-
+	
 	protected Tile[] m_ownedTile;
 	protected Character[] m_underLing;
 	protected Character m_overlord;
 	protected GameObject[] m_army;
-
+	
 	public int AmountofUnderlings(){return m_underLing.Length;}
 	public Character GetUnderling(int index){return m_underLing [index];}
-
+	
 	protected Ledger m_ledger;
 	protected int m_cash;
 	protected int[] m_exports;
-
+	
 	public int GetCash(){return m_cash;}
 	public bool SpendCash(int spendingCost)
 	{
 		if(m_cash > spendingCost) 
 		{
 			m_cash -= spendingCost;
-			Debug.Log(m_cash);
+			Debug.Log("cost "+m_cash);
 			return true;
 		}
 		Debug.Log ("No Money");
 		return false;
 	}
-
+	
 	public Tile GetTile(int index){	return m_ownedTile[index];}
 	public Tile GetCapitalTile(){return m_ownedTile [0];}
 	public int TilesOwned(){return m_ownedTile.Length;}
-
+	
 	public void AddTile(Tile givenTile)
 	{
 		Tile[] temp = new Tile[m_ownedTile.Length + 1];
@@ -74,7 +74,7 @@ public class Character : MonoBehaviour
 		m_ownedTile = temp;
 		givenTile.SetOwner(this);
 	}
-
+	
 	public bool OwnsTile(Tile givenTile)
 	{
 		if (m_underLing != null) 
@@ -95,8 +95,8 @@ public class Character : MonoBehaviour
 		Debug.Log ("You do not own the selected tile");
 		return false;
 	}
-
-/*	public bool OwnsTile(Character suspectedOwner, Tile givenTile)
+	
+	/*	public bool OwnsTile(Character suspectedOwner, Tile givenTile)
 	{
 		if (suspectedOwner.OwnsTile(givenTile))
 		{
@@ -114,8 +114,8 @@ public class Character : MonoBehaviour
 		return false;
 		
 	}*/
-
-
+	
+	
 	public bool OwnsArmy(Army givenArmy)
 	{
 		if (m_underLing != null) 
@@ -136,39 +136,8 @@ public class Character : MonoBehaviour
 		Debug.Log ("You do not own the selected army");
 		return false;
 	}
-
-	public void Initialise( Tile[] startingTile)
+	public void AddArmy(int givenSize, Soldier givenCompany, Vector3 tilePos)
 	{
-		m_ownedTile = new Tile[1];
-		m_ownedTile [0] = startingTile[0];
-		m_cash = 400;
-		startingTile[0].SetOwner(this);
-		AddCharacter(this);
-		GetTile(0).Build(Structure.Castle);
-		for (int i = 1; i < startingTile.Length; i++) 
-		{
-			AddTile( startingTile[i]);
-		}
-	}
-
-
-
-	void Update ()
-	{
-	
-	}
-
-	public void IncomePhase()
-	{
-		//For each owned tile
-		//Increase Cash by money earnt through resources
-		//Decrese Cash by expenses
-		//Gain Money from your underlings
-	}
-
-	public void RaiseArmy(int basePopulation, Vector3 tilePos)
-	{
-		//Raise troops based on armaments, population
 		if (m_army != null) 
 		{
 			GameObject[] temp = new GameObject[m_army.Length + 1];
@@ -179,7 +148,7 @@ public class Character : MonoBehaviour
 			temp[temp.Length-1] = Instantiate(Resources.Load("Army"), new Vector3(tilePos.x, 1, tilePos.z), Quaternion.identity) as GameObject;
 			temp[temp.Length-1].AddComponent<Army>();
 			m_army = temp;
-
+			
 		} 
 		else
 		{
@@ -187,6 +156,37 @@ public class Character : MonoBehaviour
 			m_army[0] = Instantiate(Resources.Load("Army"), new Vector3(tilePos.x, 1, tilePos.z), Quaternion.identity) as GameObject;
 			m_army[0].AddComponent<Army>();
 		}
-
+		m_army[m_army.Length - 1].GetComponent<Army>().Initialise();
+		m_army[m_army.Length - 1].GetComponent<Army>().AddCompany(givenSize, givenCompany);
 	}
+	public void Initialise(Tile[] startingTile)
+	{
+		m_ownedTile = new Tile[1];
+		m_ownedTile [0] = startingTile[0];
+		m_cash = 400;
+		startingTile[0].SetOwner(this);
+		AddCharacter(this);
+		GetTile(0).Build(Structure.Castle);
+		for (int i = 1; i < startingTile.Length; i++) 
+		{
+			AddTile(startingTile[i]);
+		}
+	}
+	
+	
+	
+	void Update ()
+	{
+		
+	}
+	
+	public void IncomePhase()
+	{
+		//For each owned tile
+		//Increase Cash by money earnt through resources
+		//Decrese Cash by expenses
+		//Gain Money from your underlings
+	}
+	
+	
 }

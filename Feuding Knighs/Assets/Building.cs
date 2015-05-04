@@ -32,7 +32,6 @@ public abstract class Building : MonoBehaviour
 		}
 	}
 
-
 	// Use this for initialization
 	
 	// Update is called once per frame
@@ -45,6 +44,6 @@ public abstract class Building : MonoBehaviour
 	{
 	//	int[] m_cost  
 	}
-	
+	public abstract void Initialise(int givenPpulation);
 	public abstract Structure GetBuildingType();
 }

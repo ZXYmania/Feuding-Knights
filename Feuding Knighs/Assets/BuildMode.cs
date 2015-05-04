@@ -5,20 +5,20 @@ public class BuildMode : Mode
 {
 	Structure selectedBuilding;
 	bool selectedArmy;
-
+	
 	public override void Initialise()
 	{
 		m_layerMask = (1 << 2) | (1 << 14);	
 		m_layerMask = ~m_layerMask;
 	}
-
+	
 	protected Building[] m_Building;
 	void Start()
 	{
 		selectedArmy = false;
 		selectedBuilding = Structure.None;
 	}
-
+	
 	public override void OnClick()
 	{
 		GameObject cursorObj = FindObjectUnderCursor();
@@ -48,11 +48,7 @@ public class BuildMode : Mode
 					{
 						switch(cursorObj.GetComponent<Building>().GetBuildingType())
 						{
-							case Structure.Castle :
-							if(m_players[currPlayer].GetCharacter().SpendCash(cursorObj.GetComponent<Castle>().BuyArmy(cursorObj.GetComponent<Tile>().GetPopulation())))
-								{
-									cursorObj.GetComponent<Tile>().GetOwner().RaiseArmy(cursorObj.GetComponent<Tile>().GetPopulation(), cursorObj.transform.position);
-								}
+							case Structure.Castle : RaiseGarrison(cursorObj);
 							break;
 							default: break;
 						}
@@ -61,16 +57,16 @@ public class BuildMode : Mode
 			}
 		}
 	}
-
+	
 	public override void OnHover()
 	{
 		GameObject cursorObj = FindObjectUnderCursor();
 		if (cursorObj != null) 
 		{
-
+			
 		}
 	}
-
+	
 	public override void OnModeEnter()
 	{
 		for(int i = 0; i < m_players[currPlayer].GetCharacter().TilesOwned(); i++) 
@@ -87,7 +83,7 @@ public class BuildMode : Mode
 		selectedArmy = false;
 		selectedBuilding = Structure.None;
 	}
-
+	
 	public override void OnModeExit()
 	{
 		for(int i = 0; i < m_players[currPlayer].GetCharacter().TilesOwned(); i++) 
@@ -98,14 +94,14 @@ public class BuildMode : Mode
 			}
 			else
 			{
-
+				
 			}
 		}
 		selectedArmy = false;
 		selectedBuilding = Structure.None;
 	}
-
-
+	
+	
 	public override void UI()
 	{
 		if (selectedBuilding != Structure.Castle) 
@@ -118,7 +114,7 @@ public class BuildMode : Mode
 		}
 		if (!selectedArmy) 
 		{
-
+			
 			if (GUI.Button (new Rect (170, Screen.height - 100, 150, 100), "Army"))
 			{
 				selectedArmy = true;
@@ -127,9 +123,26 @@ public class BuildMode : Mode
 		}
 	}
 	
-		private void Build(GameObject givenTile, Structure  givenStructure)
+	private void Build(GameObject givenTile, Structure  givenStructure)
+	{
+		givenTile.GetComponent<Tile>().Build(givenStructure);
+		givenTile.gameObject.layer = LayerMask.NameToLayer("Building");
+	}
+	private void RaiseGarrison(GameObject cursorObj)
+	{
+		Character tempChar = Character.GetCharacter(cursorObj.GetComponent<Tile>());
+		int armySize = 0;
+		for(int i = 0; i < tempChar.TilesOwned(); i++) 
 		{
-			givenTile.GetComponent<Tile>().Build(givenStructure);
-			givenTile.gameObject.layer = LayerMask.NameToLayer("Building");
+			Debug.Log(i + " :"+ tempChar.GetTile(i).GetPopulation());
+			armySize += tempChar.GetTile(i).GetPopulation();
 		}
+
+		if (m_players [currPlayer].GetCharacter().SpendCash(Army.GetCost(armySize, Soldier.MenatArms))) 
+		{
+			//Raise troops based on armaments, population
+			m_players[currPlayer].GetCharacter().AddArmy(armySize + cursorObj.GetComponent<Castle>().GetGarrison(0), Soldier.MenatArms, cursorObj.transform.position);
+			
+		} 
+	}
 }

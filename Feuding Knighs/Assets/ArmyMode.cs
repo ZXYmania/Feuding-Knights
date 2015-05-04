@@ -81,12 +81,12 @@ public class ArmyMode : Mode
 		
 	public override void UI()
 	{
-
+		if (selectedArmy != null)
+		{
+			GUI.Label(new Rect (Screen.width-160, 100, 150, 100),"Army size"+ selectedArmy.GetSize());
+		}
 	}
 		
-	private void Build(GameObject givenTile, Structure  givenStructure)
-	{
-			
-	}
+
 
 }

@@ -52,6 +52,7 @@
      <Compile Include="Assets\Building.cs" />
      <Compile Include="Assets\Castle.cs" />
      <Compile Include="Assets\Character.cs" />
+     <Compile Include="Assets\Company.cs" />
      <Compile Include="Assets\GameLogic.cs" />
      <Compile Include="Assets\GameMap.cs" />
      <Compile Include="Assets\Industry.cs" />

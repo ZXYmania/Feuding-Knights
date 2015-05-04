@@ -21,7 +21,7 @@ public class Tile : MonoBehaviour
 	Industry m_industry;
 	int m_population;
 	Terrain m_terrain;
-	public Character m_owner;
+	Character m_owner;
 
 	public Terrain GetTerrain(){return m_terrain;}
 	public Building GetBuilding(){return m_building;}
@@ -59,6 +59,8 @@ public class Tile : MonoBehaviour
 			default : break;
 		}
 		gameObject.GetComponent<Renderer>().material = Resources.Load(m_building.ToString()) as Material;
+		m_building.Initialise(m_population);
+		Debug.Log (m_population+" castle of "+GetOwner());
 	}
 
 	//public string GetPlayerName(){return m_ownerName;}
