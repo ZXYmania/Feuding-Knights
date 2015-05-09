@@ -19,7 +19,7 @@ public class PlayerMode : Mode
 	
 	public override void OnClick()
 	{
-		GameObject cursorObj = FindObjectUnderCursor();
+		GameObject cursorObj = FindObjectUnder();
 		if(cursorObj != null)
 		{
 			if(cursorObj.layer == LayerMask.NameToLayer("Tile")) 
@@ -31,7 +31,7 @@ public class PlayerMode : Mode
 	
 	public override void OnHover()
 	{
-		GameObject cursorObj = FindObjectUnderCursor();
+		GameObject cursorObj = FindObjectUnder();
 		if (cursorObj != null) 
 		{
 			

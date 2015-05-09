@@ -59,7 +59,7 @@ public class GameLogic : MonoBehaviour
 	}
 
 
-	public GameObject FindObjectUnderCursor()
+	public GameObject FindObjectUnder()
 	{
 		Ray mousePoint = Camera.main.ScreenPointToRay(Input.mousePosition);
 		RaycastHit hit;
@@ -72,6 +72,23 @@ public class GameLogic : MonoBehaviour
 			return null;
 		}
 	}	
+
+	public GameObject FindObjectUnder(Vector3 givenPos, LayerMask givenLayerMask)
+	{
+		Ray mousePoint = new Ray(givenPos, Vector3.down);
+		RaycastHit hit;
+		if (Physics.Raycast(mousePoint, out hit, 1000000, givenLayerMask))
+		{
+			Debug.Log("Hit");
+			return hit.transform.gameObject;
+		} 
+		else 
+		{
+			Debug.Log("Miss");
+			return null;
+		}
+	}
+
 
 	public void ChangeMode(int nextMode)
 	{

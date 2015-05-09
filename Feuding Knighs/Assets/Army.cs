@@ -12,16 +12,18 @@ public enum Soldier
 public class Army : MonoBehaviour 
 {
 	int m_size;
-	public int GetSize(){return m_size;}
+	public int GetSize(){return m_company.Length;}
 	int m_cost;
 	public int GetCost(){return m_cost;}
 	float m_speed = 1;
 	Character m_owner;
+	public Character GetOwner(){return m_owner;}
 	int m_movementRate;
 	bool moved;
 	protected Vector3 m_destination;
 	
 	protected Company[] m_company;
+	public Company[] GetCompany(){return m_company;}
 
 	public static int GetCost(int givenPopulation, Soldier givenUnit)
 	{
@@ -31,13 +33,26 @@ public class Army : MonoBehaviour
 			default: return -1;
 		}
 	}
-	string m_ownerName;
 
-	public void Initialise()
+	public void Destroy()
+	{
+		for (int i = 0; i < m_company.Length; i++)
+		{
+			Destroy(m_company[i]);
+		}
+	}
+/*	public static void CombineArmies(Army myArmy, Army armyCollidedWith)
+	{
+		for(int i = 0; 
+	}*/
+
+	public void Initialise(Character givenOwner)
 	{
 		m_destination = transform.position;
 		gameObject.layer = LayerMask.NameToLayer("Army");
 		m_movementRate = 2;
+		m_owner = givenOwner;
+		m_size = 0;
 	}
 	// Update is called once per frame
 	void Update () 
@@ -86,9 +101,25 @@ public class Army : MonoBehaviour
 			m_company = new Company[1];
 			m_company[0] = gameObject.AddComponent<Company>();
 		}
-		Debug.Log("Size "+givenSize);
 		m_company[m_company.Length - 1].Initialise(givenSize, givenType);
-		givenSize = givenSize - (givenSize % 100);
-		m_size = givenSize/100;
+	}
+	public void AddCompany(Company[] givenArmy)
+	{
+		Company[] temp = new Company[m_company.Length + givenArmy.Length];
+		Debug.Log ("Temp lemgth "+m_company.Length + givenArmy.Length);
+		int i = 0;
+		for(;i < m_company.Length; i++)
+		{
+			Debug.Log("I: "+i);
+			temp[i] = m_company[i];
+		}
+		for(int j = 0;i < m_company.Length + givenArmy.Length; i++)
+		{
+			Debug.Log("I: "+i +", J: " + j);
+			temp[i] = givenArmy[j];
+			j++;
+		}
+		m_company = temp;
+		Debug.Log("Company size " +GetSize ());
 	}
 }

@@ -26,6 +26,7 @@ public class Character : MonoBehaviour
 	{
 		for (int i = 0; i < characterList.Length; i++) 
 		{
+			Debug.Log("i "+i);
 			if(givenCapitalTile == characterList[i].GetCapitalTile())
 			{
 				return characterList[i];
@@ -59,7 +60,7 @@ public class Character : MonoBehaviour
 		return false;
 	}
 	
-	public Tile GetTile(int index){	return m_ownedTile[index];}
+	public Tile GetTile(int index){return m_ownedTile[index];}
 	public Tile GetCapitalTile(){return m_ownedTile [0];}
 	public int TilesOwned(){return m_ownedTile.Length;}
 	
@@ -156,8 +157,45 @@ public class Character : MonoBehaviour
 			m_army[0] = Instantiate(Resources.Load("Army"), new Vector3(tilePos.x, 1, tilePos.z), Quaternion.identity) as GameObject;
 			m_army[0].AddComponent<Army>();
 		}
-		m_army[m_army.Length - 1].GetComponent<Army>().Initialise();
-		m_army[m_army.Length - 1].GetComponent<Army>().AddCompany(givenSize, givenCompany);
+		m_army[m_army.Length - 1].GetComponent<Army>().Initialise(this);
+		int stackSize = ((givenSize - (givenSize % 1000))/1000)+1;
+		for (int i = 0; i < stackSize; i++)
+		{
+			if(i == (stackSize-1))
+			{
+				m_army[m_army.Length - 1].GetComponent<Army>().AddCompany(givenSize % 1000, givenCompany);
+				Debug.Log(givenSize % 1000);
+			}
+			else
+			{
+				m_army[m_army.Length - 1].GetComponent<Army>().AddCompany(1000, givenCompany);
+				Debug.Log(1000);
+			}
+
+		}
+	}
+	public void RemoveArmy(Army givenArmy)
+	{
+		GameObject[] temp = new GameObject[m_army.Length - 1];
+		int j = 0;
+		for(int i = 0; i < m_army.Length; i++)
+		{
+			if(givenArmy == m_army[i].GetComponent<Army>())
+			{
+				GameObject tempObj = givenArmy.gameObject;
+				givenArmy.Destroy();
+				Destroy(givenArmy);
+				Destroy(tempObj);
+			}
+			else
+			{
+				temp[j] = m_army[i];
+				j++;
+			}
+		}
+		Debug.Log(temp[0]);
+		m_army = temp;
+		Debug.Log(m_army[0]);
 	}
 	public void Initialise(Tile[] startingTile)
 	{

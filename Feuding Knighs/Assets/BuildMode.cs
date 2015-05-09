@@ -21,7 +21,7 @@ public class BuildMode : Mode
 	
 	public override void OnClick()
 	{
-		GameObject cursorObj = FindObjectUnderCursor();
+		GameObject cursorObj = FindObjectUnder();
 		if(cursorObj != null)
 		{
 			if(selectedBuilding != Structure.None)
@@ -60,7 +60,7 @@ public class BuildMode : Mode
 	
 	public override void OnHover()
 	{
-		GameObject cursorObj = FindObjectUnderCursor();
+		GameObject cursorObj = FindObjectUnder();
 		if (cursorObj != null) 
 		{
 			
@@ -130,14 +130,14 @@ public class BuildMode : Mode
 	}
 	private void RaiseGarrison(GameObject cursorObj)
 	{
-		Character tempChar = Character.GetCharacter(cursorObj.GetComponent<Tile>());
+		Character tempChar = cursorObj.GetComponent<Tile>().GetOwner();
 		int armySize = 0;
 		for(int i = 0; i < tempChar.TilesOwned(); i++) 
 		{
 			Debug.Log(i + " :"+ tempChar.GetTile(i).GetPopulation());
 			armySize += tempChar.GetTile(i).GetPopulation();
 		}
-
+		Debug.Log ("Gar: " + cursorObj.GetComponent<Castle> ().GetGarrison (0));
 		if (m_players [currPlayer].GetCharacter().SpendCash(Army.GetCost(armySize, Soldier.MenatArms))) 
 		{
 			//Raise troops based on armaments, population

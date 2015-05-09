@@ -18,7 +18,7 @@ public class ArmyMode : Mode
 
 	public override void OnClick()
 	{
-		GameObject cursorObj = FindObjectUnderCursor();
+		GameObject cursorObj = FindObjectUnder();
 		if(cursorObj != null)
 		{
 			if(cursorObj.layer == LayerMask.NameToLayer("Army")) 
@@ -36,13 +36,29 @@ public class ArmyMode : Mode
 			{
 				if(selectedArmy != null)
 				{
-					if(selectedArmy.Move(cursorObj.transform.position))
+					LayerMask armyMask = (1<< 14);
+					Vector3 aboveDestinationTile = new Vector3(cursorObj.transform.position.x, cursorObj.transform.position.y+5, cursorObj.transform.position.z);
+					GameObject collidedArmyObj = FindObjectUnder(aboveDestinationTile, armyMask);
+					if(collidedArmyObj == null)
 					{
-						selectedArmy.gameObject.GetComponent<Renderer>().material = Resources.Load("ArmyMoved") as Material;
-						Debug.Log("Moved");
-						selectedArmy = null;
-						m_layerMask = 1 << 2;
-						m_layerMask = ~m_layerMask;
+						if(selectedArmy.Move(cursorObj.transform.position))
+						{
+							selectedArmy.gameObject.GetComponent<Renderer>().material = Resources.Load("ArmyMoved") as Material;
+							Debug.Log("Moved");
+							selectedArmy = null;
+							m_layerMask = 1 << 2;
+							m_layerMask = ~m_layerMask;
+						}
+					}
+					else
+					{
+						if(ArmiesCollide(selectedArmy, collidedArmyObj.GetComponent<Army>()))
+						{
+							Debug.Log("Merged");
+							selectedArmy = null;
+							m_layerMask = 1 << 2;
+							m_layerMask = ~m_layerMask;
+						}
 					}
 				}
 				else
@@ -55,7 +71,7 @@ public class ArmyMode : Mode
 
 	public override void OnHover()
 	{
-		GameObject cursorObj = FindObjectUnderCursor();
+		GameObject cursorObj = FindObjectUnder();
 		if (cursorObj != null) 
 		{
 
@@ -86,7 +102,24 @@ public class ArmyMode : Mode
 			GUI.Label(new Rect (Screen.width-160, 100, 150, 100),"Army size"+ selectedArmy.GetSize());
 		}
 	}
-		
+
+	public bool ArmiesCollide(Army myArmy, Army armyCollidedWith)
+	{
+		if (myArmy.GetOwner() != armyCollidedWith.GetOwner ()) 
+		{
+			//Battle 
+			Debug.Log("Battle");
+			return true;
+		} 
+		else if(myArmy != armyCollidedWith)
+		{
+			Company[] tempComp = armyCollidedWith.GetCompany();
+			myArmy.AddCompany(tempComp);
+			myArmy.GetOwner().RemoveArmy(myArmy);
+			return true;
+		}
+		return false;
+	}
 
 
 }
