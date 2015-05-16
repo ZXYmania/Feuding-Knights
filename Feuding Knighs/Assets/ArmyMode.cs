@@ -112,14 +112,40 @@ public class ArmyMode : Mode
 			return true;
 		} 
 		else if(myArmy != armyCollidedWith)
-		{
-			Company[] tempComp = armyCollidedWith.GetCompany();
-			myArmy.AddCompany(tempComp);
-			myArmy.GetOwner().RemoveArmy(myArmy);
+		{ 
+			armyCollidedWith.AddCompany(myArmy.GetCompany());	//Add this army to the already existing army
+			myArmy.GetOwner().RemoveArmy(myArmy);	//Remove this army
 			return true;
 		}
 		return false;
 	}
 
+	public void BattleArmy(Army myArmy, Army armyCollidedWith)
+	{
+		int tempRand = Random.Range(0, 100);
+		if (tempRand > 90)
+		{
+			// major victory armyCollidedWith
+		} 
+		else if (tempRand > 70)
+		{
+			// decisive victory armyCollidedWith
+		} else if (tempRand > 50)
+		{
+			//Retreat made by myarmy
+		}
+		else if (tempRand > 30)
+		{
+			//retreat made by armycollidedwith
+		}
+		else if (tempRand > 10)
+		{
+			//decisive victory made by myarmy
+		}
+		else
+		{
+			//major victory made by my army
+		}
+	}
 
 }

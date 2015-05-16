@@ -22,7 +22,7 @@ public class Army : MonoBehaviour
 	bool moved;
 	protected Vector3 m_destination;
 	
-	protected Company[] m_company;
+	public Company[] m_company;
 	public Company[] GetCompany(){return m_company;}
 
 	public static int GetCost(int givenPopulation, Soldier givenUnit)
@@ -106,21 +106,21 @@ public class Army : MonoBehaviour
 	public void AddCompany(Company[] givenArmy)
 	{
 		Company[] temp = new Company[m_company.Length + givenArmy.Length];
-		Debug.Log ("Temp lemgth "+m_company.Length + givenArmy.Length);
-
 		int i = 0;
 		for(;i < m_company.Length; i++)
 		{
 			Debug.Log("I: "+i);
 			temp[i] = m_company[i];
 		}
-		for(int j = 0;i < m_company.Length + givenArmy.Length; i++)
+		m_company = temp;
+		Debug.Log ("currlength " + m_company.Length);
+		for(int j = 0; i < m_company.Length; j++)
 		{
 			Debug.Log("I: "+i +", J: " + j);
-			temp[i] = givenArmy[j];
-			j++;
+			m_company[i] = gameObject.AddComponent<Company>();
+			m_company[i].Initialise(givenArmy[j]);
+			i++;
 		}
-		m_company = temp;
 		Debug.Log("Company size " +GetSize ());
 	}
 }
