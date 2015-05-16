@@ -107,6 +107,7 @@ public class Army : MonoBehaviour
 	{
 		Company[] temp = new Company[m_company.Length + givenArmy.Length];
 		Debug.Log ("Temp lemgth "+m_company.Length + givenArmy.Length);
+
 		int i = 0;
 		for(;i < m_company.Length; i++)
 		{
